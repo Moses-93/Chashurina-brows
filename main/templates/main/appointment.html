@@ -1,0 +1,31 @@
+{% extends 'base.html' %}
+
+{% block title %}Запис до майстра{% endblock %}
+
+{% block content %}
+    <h2>Запис до майстра</h2>
+    <p>Заповніть форму нижче, щоб записатися на послугу:</p>
+    <form method="post" id="appointment-form">
+        {% csrf_token %}
+        {{ form.as_p }}
+        <script>
+            document.getElementById("id_date").addEventListener("change", function() {
+                var date = document.getElementById("id_date").value;
+                fetch(`/get_available_slots/?date=${date}`)
+                    .then(response => response.json())
+                    .then(data => {
+                        var timeField = document.getElementById("id_time");
+                        timeField.innerHTML = '';
+                        data.available_slots.forEach(function(slot) {
+                            var option = document.createElement("option");
+                            option.value = slot;
+                            option.text = slot;
+                            timeField.appendChild(option);
+                        });
+                    });
+            });
+            </script>
+            
+        <button type="submit">Записатись</button>
+    </form>
+{% endblock %}
