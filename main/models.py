@@ -1,8 +1,11 @@
 from django.db import models
+from datetime import timedelta
+
 
 class Service(models.Model):
     name = models.CharField(max_length=100, unique=True)
     price = models.CharField(max_length=10, null=True)
+    durations = models.DurationField(null=False, default=timedelta(hours=1))
 
     def __str__(self):
         return self.name

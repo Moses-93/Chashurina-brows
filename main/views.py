@@ -1,7 +1,7 @@
-from django.http import JsonResponse
 from django.shortcuts import render
-from .forms import NotesForm, generate_slots
-from .models import Notes
+from .forms import NotesForm
+from .utils import get_available_slots
+from django.http import JsonResponse
 
 def main(request):
     return render(request, 'main/index.html')
@@ -9,9 +9,6 @@ def main(request):
 def make_appointment(request):
     if request.method == 'POST':
         form = NotesForm(request.POST)
-        print(type(request.POST.get('time')))
-        print(request.POST.get('time'))
-        print(request.POST)
         if form.is_valid():
             form.save()
             return render(request, 'main/success.html')
@@ -23,12 +20,11 @@ def make_success(request):
     ...
 
 
-def get_available_slots(request):
-    select_data = request.GET.get('date')
-    if select_data:
-        slots = generate_slots()
-        booked_slots = Notes.objects.filter(date=select_data).values_list('time', flat=True)
-        available_slots = [slot for slot in slots if slot not in booked_slots]
+def get_available_slots_view(request):
+    date = request.GET.get('date')
+    service_id = request.GET.get('service_id')
+    if date:
+        available_slots = get_available_slots(date, service_id)
         return JsonResponse({'slots': available_slots})
     else:
         return JsonResponse({'slots': []})
