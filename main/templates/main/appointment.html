@@ -1,31 +1,45 @@
 {% extends 'base.html' %}
 
-{% block title %}Запис до майстра{% endblock %}
+{% block title %} Запис {% endblock %}
 
 {% block content %}
-    <h2>Запис до майстра</h2>
-    <p>Заповніть форму нижче, щоб записатися на послугу:</p>
-    <form method="post" id="appointment-form">
-        {% csrf_token %}
-        {{ form.as_p }}
-        <script>
-            document.getElementById("id_date").addEventListener("change", function() {
-                var date = document.getElementById("id_date").value;
-                fetch(`/get_available_slots/?date=${date}`)
-                    .then(response => response.json())
-                    .then(data => {
-                        var timeField = document.getElementById("id_time");
-                        timeField.innerHTML = '';
-                        data.available_slots.forEach(function(slot) {
-                            var option = document.createElement("option");
-                            option.value = slot;
-                            option.text = slot;
-                            timeField.appendChild(option);
+<!-- Підключаємо jQuery через CDN -->
+<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+
+<form method="post" action="{% url 'appointment' %}">
+    {% csrf_token %}
+    {{ form.as_p }}
+    
+    <script>
+        $(document).ready(function() {
+            // Відслідковуємо зміну дати
+            $('#id_date').change(function() {
+                var selectedDate = $(this).val(); // Отримуємо вибрану дату
+                
+                // Виконуємо AJAX-запит на сервер для отримання доступних слотів
+                $.ajax({
+                    url: '{% url "get_available_slots" %}',  // Викликаємо наше представлення
+                    data: {
+                        'date': selectedDate  // Передаємо обрану дату в запиті
+                    },
+                    dataType: 'json',
+                    success: function(data) {
+                        // Очищаємо список слотів
+                        $('#id_time').empty();
+                        
+                        // Додаємо нові доступні слоти до поля time
+                        $.each(data.slots, function(index, slot) {
+                            $('#id_time').append($('<option>', {
+                                value: slot,
+                                text: slot
+                            }));
                         });
-                    });
+                    }
+                });
             });
-            </script>
-            
-        <button type="submit">Записатись</button>
-    </form>
+        });
+    </script>
+    
+    <button type="submit">Записатись</button>
+</form>
 {% endblock %}
