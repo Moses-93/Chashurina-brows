@@ -18,7 +18,7 @@ def generate_slots():
 def get_available_slots(date, service_id=None):
     """Повертає доступні часові слоти для певної дати з врахуванням тривалості послуги."""
     booked_slots = Notes.objects.filter(date=date).values_list('time', flat=True)
-    generate_slots = generate_slots()
+    available_slots = generate_slots()
 
     if service_id:
         try:
@@ -33,8 +33,10 @@ def get_available_slots(date, service_id=None):
 
             # Видаляємо всі слоти, які потрапляють в проміжок занятого часу
             available_slots = [
-                slot for slot in generate_slots
+                slot for slot in available_slots
                 if not (booked_datetime <= datetime.strptime(slot, '%H:%M') < booked_end_time)
             ]
-
-    return available_slots
+    if available_slots:     
+        return available_slots
+    else:
+        return ["Вільних місць немає. Виберіть іншу дату"]

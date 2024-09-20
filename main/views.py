@@ -1,16 +1,33 @@
 from django.shortcuts import render
 from .forms import NotesForm
+from .models import Service
 from .utils import get_available_slots
 from django.http import JsonResponse
+from .telegram_sender import send_message
 
 def main(request):
-    return render(request, 'main/index.html')
+    services = Service.objects.all()
+    data = {
+        'services': services
+    }
+    return render(request, 'main/index.html', context=data)
 
 def make_appointment(request):
     if request.method == 'POST':
         form = NotesForm(request.POST)
         if form.is_valid():
             form.save()
+            data = form.cleaned_data
+            message = (
+            f"Новий запис:\n"
+            f"Ім'я: {data['name']}\n"
+            f"Телефон: {data['phone']}\n"
+            f"Дата: {data['date']}\n"
+            f"Час: {data['time']}\n"
+            f"Послуга: {data['service'].name}"
+)
+            
+            send_message(1763711362, message)
             return render(request, 'main/success.html')
     else:
         form = NotesForm()

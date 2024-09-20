@@ -5,7 +5,15 @@
 {% block content %}
     <section class="hero">
         <h1>Вітаю на сторінці майстра-бровіста</h1>
-        <p>Я надаю професійні послуги з догляду за бровами та мейкапу.</p>
+        <p>Я надаю професійні послуги з догляду за бровами.</p>
+        <p>Послуги, їх вартість та тривалість:</p>
+        <ul>
+            {% for service in services %}
+            <li>{{ service.name }}: {{ service.price }} - тривалість: {{ service.durations }}
+            </li>
+            {% endfor %}
+        </ul>
+        
         <button onclick="location.href='appointment/'">Записатись</button>
     </section>
 {% endblock %}
