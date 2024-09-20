@@ -26,3 +26,7 @@ class Notes(models.Model):
     time = models.CharField(null=False, blank=True)
     created_at = models.DateTimeField(auto_now_add=True)
 
+class Errors(models.Model):
+    name = models.CharField(max_length=50, null=False)
+    phone = models.CharField(max_length=15, null=False)
+    description = models.TextField(null=False)

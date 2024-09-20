@@ -3,34 +3,27 @@
 {% block title %}Запис{% endblock %}
 
 {% block content %}
-<!-- Підключаємо jQuery через CDN -->
-<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
-
-<form method="post" action="{% url 'appointment' %}">
+<form method="post" action="{% url 'appointment' %}" class="form-control">
     {% csrf_token %}
     {{ form.as_p }}
     
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
     <script>
         $(document).ready(function() {
             function updateAvailableSlots() {
-                var selectedDate = $('#id_date').val(); // Отримуємо вибрану дату
-                var selectedService = $('#id_service').val(); // Отримуємо обрану послугу
+                var selectedDate = $('#id_date').val(); 
+                var selectedService = $('#id_service').val(); 
 
-                // Перевіряємо, що дата та послуга вибрані
                 if (selectedDate && selectedService) {
-                    // Виконуємо AJAX-запит на сервер для отримання доступних слотів
                     $.ajax({
                         url: '{% url "get_available_slots" %}',
                         data: {
                             'date': selectedDate,
-                            'service_id': selectedService  // Передаємо обрану дату та послугу в запиті
+                            'service_id': selectedService
                         },
                         dataType: 'json',
                         success: function(data) {
-                            // Очищаємо список слотів
                             $('#id_time').empty();
-
-                            // Додаємо нові доступні слоти до поля time
                             $.each(data.slots, function(index, slot) {
                                 $('#id_time').append($('<option>', {
                                     value: slot,
@@ -39,7 +32,6 @@
                             });
                         },
                         error: function() {
-                            // Відображаємо повідомлення у разі помилки
                             $('#id_time').empty();
                             $('#id_time').append($('<option>', {
                                 text: 'Не вдалося завантажити слоти',
@@ -50,16 +42,14 @@
                 }
             }
 
-            // Відслідковуємо зміну дати та послуги
             $('#id_date').change(updateAvailableSlots);
             $('#id_service').change(updateAvailableSlots);
 
-            // Встановлюємо порожній варіант при завантаженні сторінки
-            $('#id_date').val('');  // Скидаємо дату на порожню
-            $('#id_time').empty();  // Очищаємо слоти часу
+            $('#id_date').val('');
+            $('#id_time').empty();
         });
     </script>
     
-    <button type="submit">Записатись</button>
+    <button type="submit" class="btn btn-primary">Записатись</button>
 </form>
 {% endblock %}

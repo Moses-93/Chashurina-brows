@@ -1,5 +1,5 @@
 from django.shortcuts import render
-from .forms import NotesForm
+from .forms import NotesForm, ErrorsForm
 from .models import Service
 from .utils import get_available_slots
 from django.http import JsonResponse
@@ -25,8 +25,7 @@ def make_appointment(request):
             f"Дата: {data['date']}\n"
             f"Час: {data['time']}\n"
             f"Послуга: {data['service'].name}"
-)
-            
+            )
             send_message(1763711362, message)
             return render(request, 'main/success.html')
     else:
@@ -47,6 +46,14 @@ def get_available_slots_view(request):
         return JsonResponse({'slots': []})
     
 
+def report_errors(request):
+    if request.method == 'POST':
+        form = ErrorsForm(request.POST)
+        if form.is_valid():
+            form.save()
+    else:
+        form = ErrorsForm()
+    return render(request, 'main/report_errors.html', {'form': form})
 
 
 
