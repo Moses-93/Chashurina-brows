@@ -1,4 +1,4 @@
-from django.shortcuts import render
+from django.shortcuts import redirect, render
 from .forms import NotesForm, ErrorsForm
 from .models import Service
 from .utils import get_available_slots
@@ -11,6 +11,7 @@ def main(request):
         'services': services
     }
     return render(request, 'main/index.html', context=data)
+
 
 def make_appointment(request):
     if request.method == 'POST':
@@ -27,14 +28,11 @@ def make_appointment(request):
             f"Послуга: {data['service'].name}"
             )
             send_message(1763711362, message)
-            return render(request, 'main/success.html')
+            return render(request, 'main/success.html', {'form': data})
     else:
         form = NotesForm()
     return render(request, 'main/appointment.html', {'form': form})
     
-def make_success(request):
-    ...
-
 
 def get_available_slots_view(request):
     date = request.GET.get('date')
@@ -51,6 +49,7 @@ def report_errors(request):
         form = ErrorsForm(request.POST)
         if form.is_valid():
             form.save()
+            return redirect('main')
     else:
         form = ErrorsForm()
     return render(request, 'main/report_errors.html', {'form': form})

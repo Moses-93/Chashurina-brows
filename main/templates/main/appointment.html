@@ -3,6 +3,7 @@
 {% block title %}Запис{% endblock %}
 
 {% block content %}
+    <h2 class="text-center">Заповніть форму для запису:</h2>
 <form method="post" action="{% url 'appointment' %}" class="form-control">
     {% csrf_token %}
     {{ form.as_p }}
@@ -49,6 +50,30 @@
             $('#id_time').empty();
         });
     </script>
+    <script>
+        document.addEventListener("DOMContentLoaded", function() {
+            var phoneInput = document.querySelector('input[name="phone"]');
+        
+            phoneInput.addEventListener('focus', function() {
+                if (phoneInput.value === '+380') {
+                    phoneInput.value = '';
+                }
+            });
+        
+            phoneInput.addEventListener('input', function() {
+                if (!phoneInput.value.startsWith('+380')) {
+                    phoneInput.value = '+380';
+                }
+            });
+        
+            phoneInput.addEventListener('blur', function() {
+                if (phoneInput.value === '') {
+                    phoneInput.value = '+380';
+                }
+            });
+        });
+        </script>
+        
     
     <button type="submit" class="btn btn-primary">Записатись</button>
 </form>

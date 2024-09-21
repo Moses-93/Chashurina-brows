@@ -12,7 +12,8 @@ def select_date():
 
 class NotesForm(forms.ModelForm):
     name = forms.CharField(label="Ім'я:", max_length=150, required=True)
-    phone = forms.CharField(label="Телефон:", max_length=15, required=True)
+    phone = forms.CharField(label="Телефон:", max_length=13, min_length=13, required=True, 
+                            widget=forms.TextInput(attrs={'placeholder': '+380', 'pattern': r'^\+380[0-9]{9}$'}))
     service = forms.ModelChoiceField(label="Оберіть послугу зі списку:", queryset=select_service(), required=True)
     date = forms.ChoiceField(label="Оберіть вільну дату:", choices=[('', '-------')] + select_date(), required=True)
     time = forms.ChoiceField(label="Оберіть вільний час:")

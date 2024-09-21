@@ -4,13 +4,16 @@
 
 {% block content %}
     <section class="text-center">
-        <h1>Вітаю на сторінці майстра-бровіста</h1>
-        <p>Я надаю професійні послуги з догляду за бровами.</p>
-        <p>Послуги, їх вартість та тривалість:</p>
+        <h1>Вітаю Вас на моїй сторінці</h1>
+        <p>Я - майстер-бровіст Дарія. Надаю професійні послуги з догляду за бровами.</p>
+        <p>Запрошую Вас на сеанс краси, де ми разом з вами зможемо підібрати ідеальну форму та колір для ваших брів.
+            
+        </p>
+        <h4>Мої послуги:</h4>
         <ul class="list-unstyled">
             {% for service in services %}
             <li class="service-item">
-                <strong>{{ service.name }}</strong>: {{ service.price }} - тривалість: {{ service.durations }} хвилин
+                <strong>{{ service.name }}</strong>: {{ service.price }} - тривалість - {{ service.durations }} хвилин
             </li>
             {% endfor %}
         </ul>

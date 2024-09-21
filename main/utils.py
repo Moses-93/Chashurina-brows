@@ -39,4 +39,4 @@ def get_available_slots(date, service_id=None):
     if available_slots:     
         return available_slots
     else:
-        return ["Вільних місць немає. Виберіть іншу дату"]
+        return ["Вільних місць немає. Оберіть іншу дату"]
