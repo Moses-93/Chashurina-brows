@@ -6,13 +6,13 @@ from django.db import migrations, models
 class Migration(migrations.Migration):
 
     dependencies = [
-        ('main', '0004_freedate_remove_notes_description'),
+        ("main", "0004_freedate_remove_notes_description"),
     ]
 
     operations = [
         migrations.AddField(
-            model_name='freedate',
-            name='free',
+            model_name="freedate",
+            name="free",
             field=models.BooleanField(default=True),
         ),
     ]

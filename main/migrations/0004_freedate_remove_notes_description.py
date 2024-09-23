@@ -6,19 +6,27 @@ from django.db import migrations, models
 class Migration(migrations.Migration):
 
     dependencies = [
-        ('main', '0003_rename_data_notes_date'),
+        ("main", "0003_rename_data_notes_date"),
     ]
 
     operations = [
         migrations.CreateModel(
-            name='FreeDate',
+            name="FreeDate",
             fields=[
-                ('id', models.BigAutoField(auto_created=True, primary_key=True, serialize=False, verbose_name='ID')),
-                ('date', models.CharField(max_length=10, unique=True)),
+                (
+                    "id",
+                    models.BigAutoField(
+                        auto_created=True,
+                        primary_key=True,
+                        serialize=False,
+                        verbose_name="ID",
+                    ),
+                ),
+                ("date", models.CharField(max_length=10, unique=True)),
             ],
         ),
         migrations.RemoveField(
-            model_name='notes',
-            name='description',
+            model_name="notes",
+            name="description",
         ),
     ]

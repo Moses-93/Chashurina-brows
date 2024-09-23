@@ -6,18 +6,18 @@ from django.db import migrations, models
 class Migration(migrations.Migration):
 
     dependencies = [
-        ('main', '0005_freedate_free'),
+        ("main", "0005_freedate_free"),
     ]
 
     operations = [
         migrations.AlterField(
-            model_name='notes',
-            name='date',
+            model_name="notes",
+            name="date",
             field=models.CharField(blank=True),
         ),
         migrations.AlterField(
-            model_name='notes',
-            name='time',
+            model_name="notes",
+            name="time",
             field=models.CharField(blank=True),
         ),
     ]
