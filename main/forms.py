@@ -1,4 +1,5 @@
 from django import forms
+from django.db.utils import ProgrammingError
 
 from .models import Errors, FreeDate, Notes, Service
 from .utils import generate_slots, get_available_slots
@@ -12,7 +13,10 @@ def select_service():
 def select_date():
     # Вибираємо всі вільні дати з таблиці FreeDate
     free_date = FreeDate.objects.filter(free=True)
-    return [(date.date, date.date) for date in free_date]
+    try:
+        return [(date.date, date.date) for date in free_date]
+    except ProgrammingError:
+        return [("", "-------")]
 
 
 class NotesForm(forms.ModelForm):
