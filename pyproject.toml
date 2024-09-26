@@ -1,0 +1,31 @@
+[tool.poetry]
+name = "chashurina-brows"
+version = "0.1.0"
+description = ""
+authors = ["Moses-93 <moieseenko2001@gmail.com>"]
+package-mode = false
+license = "MIT"
+readme = "README.md"
+
+[tool.poetry.dependencies]
+python = "3.12.3"
+django = "^5.1.1"
+psycopg2-binary = "^2.9.9"
+requests = "^2.32.3"
+flake8 = "^7.1.1"
+pytest = "^8.3.3"
+pytest-django = "^4.9.0"
+django-compressor = "^4.5.1"
+python-dotenv = "^1.0.1"
+autopep8 = "^2.3.1"
+black = "^24.8.0"
+isort = "^5.13.2"
+coverage = "^7.6.1"
+gunicorn = "^23.0.0"
+dj-database-url = "^2.2.0"
+poetry-plugin-export = "^1.8.0"
+
+
+[build-system]
+requires = ["poetry-core"]
+build-backend = "poetry.core.masonry.api"

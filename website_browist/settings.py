@@ -12,11 +12,10 @@ https://docs.djangoproject.com/en/5.1/ref/settings/
 
 import os
 from pathlib import Path
-import dj_database_url
 import dotenv
 
 # Load environment variables from.env file
-dotenv.load_dotenv("../.env")
+dotenv.load_dotenv("./.env")
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
@@ -83,10 +82,10 @@ WSGI_APPLICATION = "website_browist.wsgi.application"
 DATABASES = {
     "default": {
         "ENGINE": "django.db.backends.postgresql",
-        "NAME": "postgres",
-        "USER": "postgres",
-        "PASSWORD": "4312",
-        "HOST": "127.0.0.1",
+        "NAME": os.getenv('DB_NAME'),
+        "USER": os.getenv('DB_USER'),
+        "PASSWORD": os.getenv('DB_PASSWORD'),
+        "HOST": "172.19.0.2",
         "PORT": "5432",
     }
 }
