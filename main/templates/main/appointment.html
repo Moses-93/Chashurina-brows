@@ -73,8 +73,41 @@
             });
         });
         </script>
-        
-    
-    <button type="submit" class="btn btn-primary">Записатись</button>
+        <div class="form-group">
+            <input type="checkbox" id="privacyCheckbox">
+            <label for="privacyCheckbox"> Я погоджуюсь з <a href="https://www.privacypolicies.com/live/347b88c3-daa8-4764-a108-2bcd0ce34192">Угодою користувача</a> та <a href="https://www.privacypolicies.com/live/f460312e-3ae9-4dc2-b3e9-860b3466961a">Політикою та конфіденційності</a></label>
+        </div>
+        <script>
+            $(document).ready(function() {
+                var checkbox = $('#privacyCheckbox');
+                var submitBtn = $('#submitBtn');
+
+                // Встановлення початкового стилю для кнопки
+                submitBtn.css({
+                    'background-color': '#e0e0e0', // світло-сірий
+                    'color': '#a0a0a0' // світло-сірий текст
+                });
+
+                // Ввімкнути/вимкнути кнопку залежно від стану чекбокса
+                checkbox.change(function() {
+                    if (this.checked) {
+                        submitBtn.prop('disabled', false);
+                        submitBtn.css({
+                            'background-color': '#444444', // сірий
+                            'color': '#ffffff' // білий текст
+                        });
+                    } else {
+                        submitBtn.prop('disabled', true);
+                        submitBtn.css({
+                            'background-color': '#e0e0e0', // світло-сірий
+                            'color': '#a0a0a0' // світло-сірий текст
+                        });
+                    }
+                });
+            });
+        </script>
+        <div class="text-center" style="margin-top: 30px;">
+            <button type="submit" id="submitBtn" class="btn" disabled>Записатись</button>
+        </div>
 </form>
 {% endblock %}

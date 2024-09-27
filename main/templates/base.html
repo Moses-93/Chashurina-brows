@@ -7,6 +7,7 @@
     {% load static %}
     <link rel="stylesheet" href="{% static 'css/style.css' %}">
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="icon" href="{% static 'images/favicon.ico' %}" type="image/x-icon">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-icons/1.10.5/font/bootstrap-icons.min.css">
 </head>
 <body>
@@ -38,8 +39,8 @@
         {% endblock %}
     </div>
 
-    <!-- Повідомлення про помилки (перенесено в футер) -->
-    <div class="notification" id="notification">
+    <!-- Повідомлення про розробку -->
+    <div class="notification" id="notification" style="display: none;">
         Сайт знаходиться в розробці. Будь ласка, повідомте про будь-які помилки!
     </div>
 
@@ -59,30 +60,35 @@
                     <i class="bi bi-instagram"></i>
                 </a>
             </div>
-            <div class="footer-info">
+            <div class="footer-contact">
                 <div class="footer-address">
                     <i class="bi bi-geo-alt-fill"></i>
                     <a href="https://maps.app.goo.gl/Na32VQDrjEXhK9ok7" target="_blank" class="footer-link">Одеса, вул. Перлинна, 3</a>
                 </div>
-                <div class="footer-phone">
+                <div class="footer-phone" style="margin-left: 10px;"> <!-- Додаємо відступ -->
                     <i class="bi bi-telephone-fill"></i>
                     <a href="#" id="footer-phone-number" class="footer-link" onclick="copyPhoneNumber()">+380 (93) 405 07 98</a>
                 </div>
             </div>
         </div>
     </footer>
-
+    
     <!-- Скріпти -->
     <script>
-        // Показуємо повідомлення при завантаженні сторінки
+        // Перевіряємо localStorage на наявність повідомлення
         window.onload = function() {
-            var notification = document.getElementById('notification');
-            notification.classList.add('visible');
+            if (!localStorage.getItem('devNotificationShown')) {
+                var notification = document.getElementById('notification');
+                notification.style.display = 'block'; // Показуємо повідомлення
 
-            // Приховуємо повідомлення через 5 секунд
-            setTimeout(function() {
-                notification.classList.remove('visible');
-            }, 5000);
+                // Зберігаємо у localStorage, щоб більше не показувати
+                localStorage.setItem('devNotificationShown', 'true');
+
+                // Приховуємо повідомлення через 5 секунд
+                setTimeout(function() {
+                    notification.style.display = 'none';
+                }, 5000);
+            }
         };
 
         // Копіювання номера телефону
