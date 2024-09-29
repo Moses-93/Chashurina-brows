@@ -10,5 +10,5 @@ urlpatterns = [
         "get-available-slots/",
         views.get_available_slots_view,
         name="get_available_slots",
-    ),  # API endpoint for getting available slots for a given date.
+    ),
 ]

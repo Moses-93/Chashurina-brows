@@ -8,12 +8,33 @@ from .utils import get_available_slots
 
 
 def main(request):
+    """
+    Функція обробляє відображення головної сторінки з усіма доступними послугами.
+
+    Параметри:
+    запит (HttpRequest): Вхідний об'єкт запиту, що містить інформацію про клієнта.
+
+    Повертає:
+    HttpResponse: Зренерована головна сторінка з усіма доступними послугами.
+    """
     services = Service.objects.all()
     data = {"services": services}
     return render(request, "main/index.html", context=data)
 
 
 def make_appointment(request):
+    """
+    Ця функція обробляє процес створення запису. Вона відображає форму запису,
+    перевіряє дані форми, зберігає запис, надсилає сповіщення адміністратору,
+    та перенаправляє на сторінку успіху.
+
+    Параметри:
+    request (HttpRequest): Вхідний об'єкт запиту, що містить інформацію про клієнта.
+
+    Повертає:
+    HttpResponse: Зренерована сторінка форми запису, якщо метод запиту не є POST.
+    HttpResponse: Зренерована сторінка успіху з деталями запису, якщо метод запиту є POST і форма дійсна.
+    """
     if request.method == "POST":
         form = NotesForm(request.POST)
         if form.is_valid():
@@ -35,6 +56,20 @@ def make_appointment(request):
 
 
 def get_available_slots_view(request):
+    """
+    Ця функція обробляє отримання доступних часів запису на основі наданої дати та послуги.
+    Вона отримує дату та service_id з GET-параметрів запиту.
+    Якщо дата надана, вона викликає функцію get_available_slots для отримання доступних часів для вказаної дати та послуги.
+    Потім повертає JsonResponse з доступними часами.
+    Якщо дата не надана, повертається порожній JsonResponse.
+
+    Параметри:
+    request (HttpRequest): Вхідний об'єкт запиту, що містить інформацію про клієнта.
+
+    Повертає:
+    JsonResponse: Об'єкт JsonResponse, що містить доступні часи для вказаної дати та послуги.
+    Якщо дата не надана, повертається порожній JsonResponse.
+    """
     date = request.GET.get("date")
     service_id = request.GET.get("service_id")
     if date:
@@ -45,6 +80,17 @@ def get_available_slots_view(request):
 
 
 def report_errors(request):
+    """
+    Ця функція обробляє звіти про помилки. Вона відображає форму для звітування про помилки,
+    перевіряє дані форми, зберігає звіт про помилку, та перенаправляє на головну сторінку.
+
+    Параметри:
+    request (HttpRequest): Вхідний об'єкт запиту, що містить інформацію про клієнта.
+
+    Повертає:
+    HttpResponse: Зренерована сторінка звіту про помилки, якщо метод запиту не є POST.
+    HttpResponseRedirect: Перенаправляє на головну сторінку, якщо метод запиту є POST і форма дійсна.
+    """
     if request.method == "POST":
         form = ErrorsForm(request.POST)
         if form.is_valid():

@@ -6,11 +6,29 @@ from .utils import generate_slots, get_available_slots
 
 
 def select_service():
-    # Вибираємо всі послуги з таблиці Service
+    """
+    Ця функція отримує всі послуги з таблиці 'Послуги'.
+
+    Параметри:
+    Немає
+
+    Повертає:
+    QuerySet, що містить всі об'єкти послуг.
+    """
     return Service.objects.all()
 
 
 def select_date():
+    """
+    Ця функція отримує всі доступні дати з таблиці 'FreeDate'.
+
+    Параметри:
+    Немає
+
+    Повертає:
+    Список кортежів, де кожен кортеж містить дату і її рядкове представлення.
+    Якщо виникає помилка ProgrammingError під час отримання даних, повертається список з одним кортежем, що містить порожній рядок і "-------".
+    """
     # Вибираємо всі вільні дати з таблиці FreeDate
     free_date = FreeDate.objects.filter(free=True)
     try:
@@ -45,11 +63,21 @@ class NotesForm(forms.ModelForm):
         fields = ["name", "phone", "service", "date", "time"]
 
     def __init__(self, *args, **kwargs):
+        """
+        Ініціалізує екземпляр NotesForm з динамічними виборами для поля 'time' на основі обраного 'date'.
+
+        Параметри:
+        *args: Невизначена кількість позиційних аргументів. Передається батьківському конструктору класу.
+        **kwargs: Аргументи з ключами. Передаються батьківському конструктору класу.
+
+        Повертає:
+        Нічого. Функція змінює вибори поля 'time' у формі екземпляра.
+        """
         super(NotesForm, self).__init__(*args, **kwargs)
         if "date" in self.data:
             try:
                 selected_date = self.data.get("date")
-                # Використовуємо утилітну функцію для отримання доступних слотів
+                # Використовується утилітарна функція для отримання доступних слотів
                 available_slots = get_available_slots(selected_date)
                 self.fields["time"].choices = [(slot, slot) for slot in available_slots]
             except (ValueError, TypeError):
@@ -62,7 +90,7 @@ class ErrorsForm(forms.ModelForm):
     name = forms.CharField(label="Ваше ім'я:", max_length=50, required=True)
     phone = forms.CharField(label="Номер телефону:", max_length=15, required=True)
     description = forms.CharField(
-        label="Опишіть помилку", widget=forms.Textarea, required=True
+        label="Опишіть проблему", widget=forms.Textarea, required=True
     )
 
     class Meta:

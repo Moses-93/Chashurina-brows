@@ -9,8 +9,8 @@ services:
       POSTGRES_PASSWORD: ${DB_PASSWORD}
     volumes:
       - postgres_data:/var/lib/postgresql/data
-    expose:
-      - "5432"
+    ports:
+      - "5432:5432"
 
   web:
     build: .
@@ -27,13 +27,28 @@ services:
     image: nginx:latest
     ports:
       - "80:80"
+      - "443:443"
     volumes:
       - ./nginx/nginx.conf:/etc/nginx/nginx.conf
       - ./static_files:/app/staticfiles
       - ./nginx/browist.conf:/etc/nginx/conf.d/browist.conf
+      - /var/www/certbot:/var/www/certbot            # Сертифікаційні файли для Certbot
+      - /etc/letsencrypt:/etc/letsencrypt 
     depends_on:
       - web
+
+  certbot:
+    image: certbot/certbot
+    container_name: certbot
+    volumes:
+      - /var/www/certbot:/var/www/certbot            # Точка для тимчасових файлів верифікації
+      - /etc/letsencrypt:/etc/letsencrypt   # Сервер для верифікації
+    depends_on:
+      - nginx
+    command: certonly --webroot   --webroot-path=/var/www/certbot  --email moieseenko2001@gmail.com --agree-tos --no-eff-email -d chashurina-brows.online  -d www.chashurina-brows.online
 
 volumes:
   postgres_data:
   static_files:
+  certificates:
+  var:
