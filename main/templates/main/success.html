@@ -1,0 +1,12 @@
+{% extends 'base.html' %}
+
+{% block title %}Запис успішний{% endblock %}
+
+{% block content %}
+    <div class="text-center">
+        <h2>Дякую за запис!</h2>
+        <p>{{form.name}}, Ви успішно записались на послугу - {{form.service}}.</p>
+        <p>Чекаю Вас {{form.date}} o {{form.time}}.</p>
+        <a href="{% url 'main' %}" class="btn-gray">Повернутись на головну</a>
+    </div>
+{% endblock %}

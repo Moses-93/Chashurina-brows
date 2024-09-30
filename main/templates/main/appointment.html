@@ -1,0 +1,113 @@
+{% extends 'base.html' %}
+
+{% block title %}Запис{% endblock %}
+
+{% block content %}
+    <h2 class="text-center">Заповніть форму для запису:</h2>
+<form method="post" action="{% url 'appointment' %}" class="form-control">
+    {% csrf_token %}
+    {{ form.as_p }}
+    
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <script>
+        $(document).ready(function() {
+            function updateAvailableSlots() {
+                var selectedDate = $('#id_date').val(); 
+                var selectedService = $('#id_service').val(); 
+
+                if (selectedDate && selectedService) {
+                    $.ajax({
+                        url: '{% url "get_available_slots" %}',
+                        data: {
+                            'date': selectedDate,
+                            'service_id': selectedService
+                        },
+                        dataType: 'json',
+                        success: function(data) {
+                            $('#id_time').empty();
+                            $.each(data.slots, function(index, slot) {
+                                $('#id_time').append($('<option>', {
+                                    value: slot,
+                                    text: slot
+                                }));
+                            });
+                        },
+                        error: function() {
+                            $('#id_time').empty();
+                            $('#id_time').append($('<option>', {
+                                text: 'Не вдалося завантажити слоти',
+                                disabled: true
+                            }));
+                        }
+                    });
+                }
+            }
+
+            $('#id_date').change(updateAvailableSlots);
+            $('#id_service').change(updateAvailableSlots);
+
+            $('#id_date').val('');
+            $('#id_time').empty();
+        });
+    </script>
+    <script>
+        document.addEventListener("DOMContentLoaded", function() {
+            var phoneInput = document.querySelector('input[name="phone"]');
+        
+            phoneInput.addEventListener('focus', function() {
+                if (phoneInput.value === '+380') {
+                    phoneInput.value = '';
+                }
+            });
+        
+            phoneInput.addEventListener('input', function() {
+                if (!phoneInput.value.startsWith('+380')) {
+                    phoneInput.value = '+380';
+                }
+            });
+        
+            phoneInput.addEventListener('blur', function() {
+                if (phoneInput.value === '') {
+                    phoneInput.value = '+380';
+                }
+            });
+        });
+        </script>
+        <div class="form-group">
+            <input type="checkbox" id="privacyCheckbox">
+            <label for="privacyCheckbox"> Я погоджуюсь з <a href="https://www.privacypolicies.com/live/347b88c3-daa8-4764-a108-2bcd0ce34192">Угодою користувача</a> та <a href="https://www.privacypolicies.com/live/f460312e-3ae9-4dc2-b3e9-860b3466961a">Політикою та конфіденційності</a></label>
+        </div>
+        <script>
+            $(document).ready(function() {
+                var checkbox = $('#privacyCheckbox');
+                var submitBtn = $('#submitBtn');
+
+                // Встановлення початкового стилю для кнопки
+                submitBtn.css({
+                    'background-color': '#e0e0e0', // світло-сірий
+                    'color': '#a0a0a0' // світло-сірий текст
+                });
+
+                // Ввімкнути/вимкнути кнопку залежно від стану чекбокса
+                checkbox.change(function() {
+                    if (this.checked) {
+                        submitBtn.prop('disabled', false);
+                        submitBtn.css({
+                            'background-color': '#444444', // сірий
+                            'color': '#ffffff' // білий текст
+                        });
+                    } else {
+                        submitBtn.prop('disabled', true);
+                        submitBtn.css({
+                            'background-color': '#e0e0e0', // світло-сірий
+                            'color': '#a0a0a0' // світло-сірий текст
+                        });
+                    }
+                });
+            });
+        </script>
+        <div class="text-center" style="margin-top: 30px;">
+            <button type="submit" id="submitBtn" class="btn" disabled>Записатись</button>
+        </div>
+</form>
+{% endblock %}

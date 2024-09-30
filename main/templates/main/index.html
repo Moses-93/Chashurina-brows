@@ -1,0 +1,22 @@
+{% extends 'base.html' %}
+
+{% block title %}Головна{% endblock %}
+
+{% block content %}
+    <section class="text-center">
+        <h1>Вітаю Вас на моїй сторінці</h1>
+        <p>Я - майстер-бровіст Дарія. Надаю професійні послуги з догляду за бровами.</p>
+        <p>Запрошую Вас на сеанс краси, де ми разом з вами зможемо підібрати ідеальну форму та колір для ваших брів.
+            
+        </p>
+        <h4>Мої послуги:</h4>
+        <ul class="list-unstyled">
+            {% for service in services %}
+            <li class="service-item">
+                <strong>{{ service.name }}</strong>: {{ service.price }} - тривалість - {{ service.durations }} хвилин
+            </li>
+            {% endfor %}
+        </ul>
+        <a href="{% url 'appointment' %}" class="btn-gray">Записатись</a>
+    </section>
+{% endblock %}
