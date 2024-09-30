@@ -36,10 +36,13 @@ jobs:
       with:
         python-version: '3.12'
 
+    - name: List project files
+      run: ls -la  # Додати для перевірки доступності файлів
+
     - name: Install dependencies
       run: |
         python -m pip install --upgrade pip
-        pip install -r $GITHUB_WORKSPACE/requirements.txt
+        pip install -r requirements.txt  # Спростити шлях
 
     - name: Run migrations
       run: |
@@ -48,6 +51,3 @@ jobs:
     - name: Run tests
       run: |
         python manage.py test
-      env:
-        DATABASE_URL: postgres://postgres:password@localhost:5432/test_db
-
