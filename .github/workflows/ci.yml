@@ -14,30 +14,33 @@ jobs:
 
     services:
       postgres:
-        image: postgres:13
+        image: postgres:16.4  # Вибери потрібну версію Postgres
+        ports:
+          - 5432:5432
         env:
-          POSTGRES_USER: postgres
-          POSTGRES_PASSWORD: password
-          POSTGRES_DB: test_db
+          POSTGRES_DB: test_db  # Ім'я бази даних
+          POSTGRES_USER: test_user  # Ім'я користувача
+          POSTGRES_PASSWORD: test_password  # Пароль користувача
         options: >-
           --health-cmd="pg_isready -U postgres"
           --health-interval=10s
           --health-timeout=5s
           --health-retries=5
-        ports:
-          - 5432:5432
 
     steps:
     - name: Checkout code
       uses: actions/checkout@v2
 
+    - name: Set up environment variables
+      run: |
+        echo "SECRET_KEY=${{ secrets.SECRET_KEY }}" >> .env
+        echo "BOT_TOKEN=${{ secrets.API_TOKEN_BOT }}" >> .env
+        echo "DB_PASSWORD=${{ secrets.DB_PASSWORD }}" >> .env
+
     - name: Set up Python
       uses: actions/setup-python@v2
       with:
-        python-version: '3.12'
-
-    - name: List project files
-      run: ls -la  # Додати для перевірки доступності файлів
+        python-version: '3.12'  # Вкажи версію Python
 
     - name: Install dependencies
       run: |
@@ -47,7 +50,4 @@ jobs:
     - name: Run migrations
       run: |
         python manage.py migrate
-
-    - name: Run tests
-      run: |
         python manage.py test
