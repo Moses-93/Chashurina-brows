@@ -19,7 +19,7 @@ jobs:
           POSTGRES_USER: ${{ secrets.DB_USER }}
           POSTGRES_PASSWORD: ${{ secrets.DB_PASSWORD }}
           POSTGRES_DB: ${{ secrets.DB_NAME }}
-          POSTGRES_HOST: db
+          POSTGRES_HOST: 127.0.0.1
         options: >-
           --health-cmd="pg_isready -U "
           --health-interval=10s
