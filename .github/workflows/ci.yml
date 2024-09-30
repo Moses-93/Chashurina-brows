@@ -20,7 +20,7 @@ jobs:
           POSTGRES_PASSWORD: "your_test_password"  # Тестовий пароль
           POSTGRES_DB: "your_test_db"
         options: >-
-          --health-cmd="pg_isready -U postgres"
+          --health-cmd="pg_isready -U db"
           --health-interval=10s
           --health-timeout=5s
           --health-retries=5
