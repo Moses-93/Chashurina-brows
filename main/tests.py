@@ -1,6 +1,7 @@
 from django.test import TestCase
 from django.urls import reverse
 from .models import Service
+from .models import FreeDate
 from .forms import NotesForm
 
 
@@ -145,6 +146,7 @@ class NotesFormTest(TestCase):
         - None
         """
         service = Service.objects.create(name="Lash Lift", price=30)
+        free_date = FreeDate.objects.create(date='2024-10-05', free=True)
         data = {
             "name": "Anna Doe",
             "phone": "+380987654321",
