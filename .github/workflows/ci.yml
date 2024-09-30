@@ -13,7 +13,7 @@ jobs:
     runs-on: ubuntu-latest
 
     services:
-      postgres:
+      db:
         image: postgres:16.4
         env:
           POSTGRES_USER: "your_test_user"  # Тестовий користувач
