@@ -1,6 +1,6 @@
 from django.test import TestCase
 from django.urls import reverse
-from .models import Service
+from .models import FreeDate, Service
 from .forms import NotesForm
 
 
@@ -128,34 +128,23 @@ class ServiceModelTests(TestCase):
         self.assertTrue(isinstance(service, Service))
 
 
-class NotesFormTest(TestCase):
-    def test_valid_form(self):
-        """
-        Тестування форми NotesForm зі валідними даними.
+@classmethod
+def setUpTestData(cls):
+    cls.service = Service.objects.create(name="Корекція", price=300)
+    cls.free_date = FreeDate.objects.create(date="2024-10-05", free=True)
 
-        Цей тест створює об'єкт Service та словник з валідними даними форми.
-        Потім створює екземпляр форми NotesForm з цими даними та перевіряє, чи форма є валідною.
-        Якщо форма є валідною, перевіряється, чи повертає метод is_valid() форми True.
 
-        Параметри:
-        - service (Service): Об'єкт Service з іменем та ціною.
-        - data (dict): Словник, що містить валідні дані форми.
-
-        Повертає:
-        - None
-        """
-        service = Service.objects.create(name="Lash Lift", price=30)
-        data = {
-            "name": "Anna Doe",
-            "phone": "+380987654321",
-            "service": service.id,
-            "date": "2024-10-05",
-            "time": "14:00",
-        }
-
-        form = NotesForm(data=data)
-        print(form.errors)
-        self.assertTrue(form.is_valid())
+def test_valid_form(self):
+    data = {
+        "name": "Anna Doe",
+        "phone": "+380987654321",
+        "service": self.service.id,
+        "date": "2024-10-05",
+        "time": "14:00",
+    }
+    form = NotesForm(data=data)
+    print(form.errors)
+    self.assertTrue(form.is_valid())
 
     def test_invalid_form(self):
         """

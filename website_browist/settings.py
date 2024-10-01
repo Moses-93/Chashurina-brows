@@ -34,14 +34,12 @@ ALLOWED_HOSTS = [
     "chashurina-brows.online",
     "www.chashurina-brows.online",
     "64.226.65.110",
-    "127.0.0.1",
 ]
 
 CSRF_TRUSTED_ORIGINS = [
-    'https://www.chashurina-brows.online',
-    'https://chashurina-brows.online',  # якщо ви також хочете включити без www
+    "https://www.chashurina-brows.online",
+    "https://chashurina-brows.online",  # якщо ви також хочете включити без www
 ]
-
 
 
 # Application definition
@@ -96,7 +94,7 @@ DATABASES = {
         "NAME": os.getenv("DB_NAME"),
         "USER": os.getenv("DB_USER"),
         "PASSWORD": os.getenv("DB_PASSWORD"),
-        "HOST": "db",
+        "HOST": "127.0.0.",
         "PORT": "5432",
     }
 }

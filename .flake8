@@ -10,4 +10,5 @@ exclude =
     *env
 ignore = 
     E203, 
-    W503   
+    W503,
+    E501
