@@ -13,7 +13,6 @@ def generate_slots():
 
     """
     slots = []
-
     start_time = datetime.strptime("10:00", "%H:%M")
     end_time = datetime.strptime("18:00", "%H:%M")
     slot_duration = timedelta(minutes=10)
@@ -25,12 +24,12 @@ def generate_slots():
     return slots
 
 
-def get_available_slots(date, service_id=None):
+def get_available_slots(date_str, service_id=None):
     """
     Отримати доступні часові слоти для певної дати, враховуючи тривалість послуги.
 
     Параметри:
-    date (str): Дата, для якої потрібно знайти доступні слоти у форматі "РРРР-ММ-ДД".
+    date_str (str): Дата, для якої потрібно знайти доступні слоти у форматі "РРРР-ММ-ДД".
     service_id (int, опціонально): Ідентифікатор послуги, для якої потрібно знайти доступні слоти.
         Якщо не вказано, функція не буде враховувати тривалість послуги.
 
@@ -38,8 +37,21 @@ def get_available_slots(date, service_id=None):
     list: Список доступних часових слотів у форматі "ГГ:ХХ".
         Якщо доступних слотів немає, повертається список з одним повідомленням: "Вільних місць немає. Оберіть іншу дату".
     """
-    booked_slots = Notes.objects.filter(date=date).values_list("time", flat=True)
+    # Перетворюємо строку на об'єкт datetime для порівняння
+    date = datetime.strptime(date_str, "%Y-%m-%d").date()
+    now = datetime.now() + timedelta(hours=1)
+
+    # Отримуємо всі заброньовані слоти для цієї дати
+    booked_slots = Notes.objects.filter(date=date_str).values_list("time", flat=True)
     available_slots = generate_slots()
+
+    # Якщо користувач обрав поточну дату, фільтруємо час, який вже пройшов
+    if date == now.date():
+        available_slots = [
+            slot
+            for slot in available_slots
+            if datetime.combine(date, datetime.strptime(slot, "%H:%M").time()) > now
+        ]
 
     if service_id:
         try:
@@ -47,19 +59,20 @@ def get_available_slots(date, service_id=None):
         except Service.DoesNotExist:
             service_duration = timedelta(
                 hours=1
-            )  # Встановлюємо за замовчуванням тривалість 1 година
+            )  # За замовчуванням тривалість 1 година
 
         # Видаляємо часові слоти, які перетинаються з уже заброньованими
         for booked_time in booked_slots:
             booked_datetime = datetime.strptime(booked_time, "%H:%M")
             booked_end_time = booked_datetime + service_duration
+            booked_start_time = booked_datetime - service_duration
 
             # Видаляємо всі слоти, які потрапляють в проміжок занятого часу
             available_slots = [
                 slot
                 for slot in available_slots
                 if not (
-                    booked_datetime
+                    booked_start_time
                     <= datetime.strptime(slot, "%H:%M")
                     < booked_end_time
                 )

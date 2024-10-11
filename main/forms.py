@@ -1,8 +1,9 @@
 from django import forms
 from django.db.utils import ProgrammingError
+from django.utils import timezone
 
 from .models import Errors, FreeDate, Notes, Service
-from .utils import generate_slots, get_available_slots
+from .utils import get_available_slots
 
 
 def select_service():
@@ -29,9 +30,9 @@ def select_date():
     Список кортежів, де кожен кортеж містить дату і її рядкове представлення.
     Якщо виникає помилка ProgrammingError під час отримання даних, повертається список з одним кортежем, що містить порожній рядок і "-------".
     """
-    # Вибираємо всі вільні дати з таблиці FreeDate
-    free_date = FreeDate.objects.filter(free=True)
+    now = timezone.now()
     try:
+        free_date = FreeDate.objects.filter(free=True, now__gt=now)
         return [(date.date, date.date) for date in free_date]
     except ProgrammingError:
         return [("", "-------")]
@@ -82,8 +83,6 @@ class NotesForm(forms.ModelForm):
                 self.fields["time"].choices = [(slot, slot) for slot in available_slots]
             except (ValueError, TypeError):
                 self.fields["time"].choices = []
-        else:
-            self.fields["time"].choices = [(slot, slot) for slot in generate_slots()]
 
 
 class ErrorsForm(forms.ModelForm):

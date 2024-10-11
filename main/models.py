@@ -13,18 +13,16 @@ class Service(models.Model):
 
 
 class FreeDate(models.Model):
-    date = models.CharField(max_length=10, unique=True)
+    date = models.DateField(unique=True)
     free = models.BooleanField(default=True, null=False)
-
-    def __str__(self):
-        return self.date
+    now = models.DateTimeField(null=False)
 
 
 class Notes(models.Model):
     name = models.CharField(max_length=150, null=False)
     phone = models.CharField(max_length=15, null=False)
     service = models.ForeignKey(Service, on_delete=models.CASCADE)
-    date = models.CharField(null=False, blank=True)
+    date = models.DateField(null=False, blank=True)
     time = models.CharField(null=False, blank=True)
     created_at = models.DateTimeField(auto_now_add=True)
 
