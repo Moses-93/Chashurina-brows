@@ -24,7 +24,61 @@ def generate_slots():
     return slots
 
 
-def get_available_slots(date_str, service_id=None):
+def gen_free_slots_today(date: datetime, now: datetime) -> list[str]:
+    """
+    Генерує список доступних часових слотів для бронювання послуг на поточний день.
+
+    Ця функція фільтрує список доступних часових слотів, згенерованих функцією `generate_slots`,
+    щоб включати лише ті слоти, які знаходяться у майбутньому відносно наданого об'єкта `now` datetime.
+
+    Параметри:
+    date (datetime): Дата, для якої потрібно згенерувати доступні часові слоти.
+        Це повинен бути об'єкт datetime, який представляє дату, з часом встановлено на 00:00.
+    now (datetime): Поточний об'єкт datetime.
+        Це повинен бути об'єкт datetime, який представляє поточний час.
+
+    Повертає:
+    list[str]: Список доступних часових слотів для бронювання послуг на поточний день.
+        Кожен часовий слот представлений як рядок у форматі "ГГ:ХХ".
+    """
+    available_slots = generate_slots()
+    available_slots = [
+        slot
+        for slot in available_slots
+        if datetime.combine(date, datetime.strptime(slot, "%H:%M").time()) > now
+    ]
+    return available_slots
+
+
+def get_blocked_time(date: str) -> tuple:
+    """
+    Отримати заброньовані часові слоти для певної дати з бази даних.
+
+    Параметри:
+    date (str): Дата, для якої потрібно отримати заброньовані часові слоти у форматі "РРРР-ММ-ДД".
+
+    Повертає:
+    tuple: Кортеж, що містить заброньовані часові слоти. Кожен часовий слот представлений як рядок у форматі "ГГ:ХХ".
+    """
+    booked_slots = Notes.objects.filter(date=date).values_list("time", flat=True)
+    return booked_slots
+
+
+def get_service_duration(service_id: int) -> timedelta:
+    """
+    Отримати тривалість послуги з бази даних за ідентифікатором послуги.
+
+    Параметри:
+    service_id (int): Унікальний ідентифікатор послуги, для якої потрібно отримати тривалість.
+
+    Повертає:
+    timedelta: Тривалість послуги у форматі timedelta.
+    """
+    duration = Service.objects.get(id=service_id).durations
+    return duration
+
+
+def get_available_slots(date_str: str, service_id=None) -> list:
     """
     Отримати доступні часові слоти для певної дати, враховуючи тривалість послуги.
 
@@ -42,25 +96,14 @@ def get_available_slots(date_str, service_id=None):
     now = datetime.now() + timedelta(hours=1)
 
     # Отримуємо всі заброньовані слоти для цієї дати
-    booked_slots = Notes.objects.filter(date=date_str).values_list("time", flat=True)
     available_slots = generate_slots()
 
     # Якщо користувач обрав поточну дату, фільтруємо час, який вже пройшов
     if date == now.date():
-        available_slots = [
-            slot
-            for slot in available_slots
-            if datetime.combine(date, datetime.strptime(slot, "%H:%M").time()) > now
-        ]
-
+        available_slots = gen_free_slots_today(date, now)
+    booked_slots = get_blocked_time(date_str)
     if service_id:
-        try:
-            service_duration = Service.objects.get(id=service_id).durations
-        except Service.DoesNotExist:
-            service_duration = timedelta(
-                hours=1
-            )  # За замовчуванням тривалість 1 година
-
+        service_duration = get_service_duration(service_id)
         # Видаляємо часові слоти, які перетинаються з уже заброньованими
         for booked_time in booked_slots:
             booked_datetime = datetime.strptime(booked_time, "%H:%M")
